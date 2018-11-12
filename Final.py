@@ -757,6 +757,7 @@ class TInt:
                 meanValue = Label(mainFrame, text='x = ' + str(self.mean)).grid(row=3, column=3, pady=2)
                 nValue = Label(mainFrame, text='n = ' + str(self.n)).grid(row=5, column=3, pady=2)
                 stdValue = Label(mainFrame, text='s = ' + str(self.stdDev)).grid(row=4, column=3, pady=2)
+
         self.locationLabel = Label(mainFrame, text='Data Input (Optional)').grid(row=6, column=0, pady=2)
         self.locationEntry = Entry(mainFrame, textvariable=locationInput).grid(row=6, column=1, padx=10, pady=2)
         self.locationButton = Button(mainFrame, text='Input', command=locationRetrieve).grid(row=6, column=2, pady=2)
@@ -825,7 +826,7 @@ class TInt:
         else:
             self.df = self.n - 1
             tCrit = sci.t.ppf(1 - (self.alpha / 2), self.df)
-            marginOfError = tCrit * self.stdDev/ np.sqrt(self.n)
+            marginOfError = tCrit * self.stdDev / np.sqrt(self.n)
             if self.mu < (self.mean + marginOfError) and self.mu > (self.mean - marginOfError):
                 self.status.configure(text='C.I: (' + str(self.mean - marginOfError) + ', ' + str(
                     self.mean + marginOfError) + '), M.O.E = ' + str(
