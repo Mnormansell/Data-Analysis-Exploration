@@ -20,14 +20,14 @@ class ZTest:
     def __init__(self, master):
         mainFrame = Frame(master)
         mainFrame.pack()
-        main.geometry('400x400')
+        main.geometry('600x400')
 
         #Status
         self.status = Label(master, text="No Errors", bd=1,relief=SUNKEN, anchor=W)
         self.status.pack(side=BOTTOM, fill=X)
 
         #Instructions
-        self.instructions = Label(mainFrame,text='Instructions',bg='purple').grid(row=0,columnspan=3)
+        self.instructions = Label(mainFrame,text='Z Test: Either manually input required statistics or import data from a .csv file (data column must be titled "Data")',bg='purple').grid(row=0,columnspan=3)
 
         #alpha
         alphaInput = StringVar()
@@ -219,14 +219,14 @@ class oneTTest:
     def __init__(self, master):
         mainFrame = Frame(master)
         mainFrame.pack()
-        main.geometry('400x400')
+        main.geometry('700x400')
 
         #Status
         self.status = Label(master, text="No Errors", bd=1,relief=SUNKEN, anchor=W)
         self.status.pack(side=BOTTOM, fill=X)
 
         #Instructions
-        self.instructions = Label(mainFrame,text='Instructions',bg='purple').grid(row=0,columnspan=3)
+        self.instructions = Label(mainFrame,text='One Sample T Test: Either manually input required statistics or import data from a .csv file (data column must be titled "Data")',bg='purple').grid(row=0,columnspan=3)
 
         #alpha
         alphaInput = StringVar()
