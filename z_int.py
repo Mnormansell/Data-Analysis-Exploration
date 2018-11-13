@@ -188,6 +188,7 @@ class ZInt:
                         total += float(item)
                         self.n += 1
                     self.mean = total / self.n
+                    file.close()
                     return 'good'  # return if it be good
                 except:
                     self.status.configure(text='Data Issue: Check that all data are floats')

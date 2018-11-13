@@ -200,6 +200,7 @@ class ZTest:
                         total += float(item)
                         self.n += 1
                     self.mean = total / self.n
+                    file.close()
                     return 'good'  # return if it be good
                 except:
                     self.status.configure(text='Data Issue: Check that all data are floats')
@@ -218,7 +219,7 @@ class ZTest:
             self.status.configure(text='Please input a \u03bc')
             self.status.update()
         elif self.test == 'default':
-            self.status.configure(text='Please choose and alternative hypthesis')
+            self.status.configure(text='Please choose an alternative hypthesis')
             self.status.update()
         elif self.sigma == 'default':
             self.status.configure(text='Please input a \u03C3')

@@ -180,6 +180,7 @@ class TInt:
                     for item in dataList:
                         partialSum += (float(item) - self.mean) ** 2
                     self.stdDev = np.sqrt(partialSum / (self.n - 1))
+                    file.close()
                     return 'good'  # return if it be good
                 except:
                     self.status.configure(text='Data Issue: Check that all data are floats')

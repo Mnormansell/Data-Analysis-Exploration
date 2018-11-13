@@ -9,19 +9,18 @@ import matplotlib.pyplot as plt
 
 ## Make sure you add sub scripts to titles, shift everything down (not on same row), glitch with a few inputs
 class TwoTTest:
-    alpha = 'none'
-    mu_one = 'none'
-    mu_two = 'none'
-    test_one = 'none'
-    test_two = 'none'
-    mean_one = 'none'
-    mean_two = 'none'
-    stdDev_one = 'none'
-    stdDev_two = 'none'
-    n_one = 'none'
-    n_two = 'none'
-    df_one = 'none'
-    df_two = 'none'
+    alpha = 'default'
+    mu_one = 'default'
+    mu_two = 'default'
+    test= 'default'
+    mean_one = 'default'
+    mean_two = 'default'
+    stdDev_one = 'default'
+    stdDev_two = 'default'
+    n_one = 'default'
+    n_two = 'default'
+    df_one = 'default'
+    df_two = 'default'
 
     def __init__(self, master):
         mainFrame = Frame(master)
@@ -183,7 +182,7 @@ class TwoTTest:
         stdInput_two = StringVar()
 
         def stdRetrieve_two():
-            stdString_two = stdInput.get()
+            stdString_two = stdInput_two.get()
             try:
                 self.stdDev_two = float(stdString_two)
                 self.stdValue_two.configure(text='s\u2082 = ' + str(self.stdDev_two))
@@ -271,38 +270,52 @@ class TwoTTest:
                 reader = csv.reader(file, delimiter=',')
                 count = 0  # to count total data\
                 position = -1
+                position_two = -1
                 dataList = []
+                dataList_two = []
                 for row in reader:
                     if count == 0:  # first line, find what position the data is at
                         for i in range(0, len(row)):
-                            if row[i] == 'data' or 'Data':
+                            if row[i] == 'data1' or row[i] == 'Data1':
                                 position = i  # sets the position
+                            elif row[i] == 'data2' or row[i] == 'Data2':
+                                position_two = i
                         count += 1
                     else:
-                        if position == -1:  # if position was not found, break
+                        if position == -1 or position_two == -1:  # if position was not found, break
                             self.status.configure(text='Invalid data set. Please title column "Data"')
                             self.status.update()
                             return
                         else:
                             dataList.append(row[position])
+                            dataList_two.append(row[position_two])
                             count += 1
-                # try:
-                self.n = 0
+                # Data Set 1:
+                self.n_one = 0
                 total = 0
                 partialSum = 0
                 for item in dataList:
                     total += float(item)
-                    self.n += 1
-                self.mean = total / self.n
-                self.df = self.n - 1
+                    self.n_one += 1
+                self.mean_one = total / self.n_one
+                self.df_one = self.n_one - 1
                 for item in dataList:
-                    partialSum += (float(item) - self.mean) ** 2
-                self.stdDev = np.sqrt(partialSum / (self.n - 1))
+                    partialSum += (float(item) - self.mean_one) ** 2
+                self.stdDev_one = np.sqrt(partialSum / (self.n_one - 1))
+
+                self.n_two = 0
+                total = 0
+                partialSum = 0
+                for item in dataList_two:
+                    total += float(item)
+                    self.n_two += 1
+                self.mean_two = total / self.n_two
+                self.df_two = self.n_two - 1
+                for item in dataList_two:
+                    partialSum += (float(item) - self.mean_two) ** 2
+                self.stdDev_two = np.sqrt(partialSum / (self.n_two - 1))
+                file.close()
                 return 'good'  # return if it be good
-                # except:
-                #     self.status.configure(text='Data Issue: Check that all data are floats')
-                #     self.status.update()
-                #     return
         except FileNotFoundError as fnf_error:
             self.status.configure(text=fnf_error)
             self.status.update()
@@ -312,30 +325,32 @@ class TwoTTest:
         if self.alpha == 'default':
             self.status.configure(text='Please input an \u03B1')
             self.status.update()
-        elif self.mu == 'default':
-            self.status.configure(text='Please input a \u03bc')
+        elif self.mu_one == 'default' or self.mu_two == 'default':
+            self.status.configure(text='Please input values for \u03bc')
             self.status.update()
         elif self.test == 'default':
-            self.status.configure(text='Please choose and alternative hypthesis')
+            self.status.configure(text='Please choose an alternative hypothesis')
             self.status.update()
-        elif self.stdDev == 'default':
-            self.status.configure(text='Please input a sample standard deviation')
+        elif self.stdDev_one == 'default' or self.stdDev_two == 'default':
+            self.status.configure(text='Please input both sample standard deviations or input data')
             self.status.update()
-        elif self.mean == 'default':
-            self.status.configure(text='Please input a Sample Mean or input data')
+        elif self.mean_one == 'default' or self.mean_two == 'default':
+            self.status.configure(text='Please input both sample means or input data')
             self.status.update()
-        elif self.n == 'default':
-            self.status.configure(text='Please input a Sample Size or input data')
+        elif self.n_one == 'default' or self.n_two == 'default':
+            self.status.configure(text='Please input both sample sizes or input data')
             self.status.update()
         else:
-            tScore = (self.mean - self.mu) / (self.stdDev / np.sqrt(self.n))
+            standard_error = np.sqrt(((self.stdDev_one**2)/self.n_one)+((self.stdDev_two**2)/self.n_two))
+            tScore = ((self.mean_one - self.mean_two) - (self.mu_one - self.mu_two))/standard_error #t score formula
+            df = max([self.df_one, self.df_two])
             pValue = 0
             if self.test == -1:  # less than
-                pValue = sci.t.cdf(tScore, self.df)
+                pValue = sci.t.cdf(tScore, df)
             elif self.test == 0:  # not equal
-                pValue = 2 * (1 - sci.t.cdf(abs(tScore), self.df))
+                pValue = 2 * (1 - sci.t.cdf(abs(tScore), df))
             elif self.test == 1:
-                pValue = 1 - sci.t.cdf(tScore, self.df)
+                pValue = 1 - sci.t.cdf(tScore, df)
             if pValue < self.alpha:
                 self.status.configure(text='t = ' + str(tScore) + ', p = ' + str(pValue) + ', Reject H\u2092')
                 self.status.update()

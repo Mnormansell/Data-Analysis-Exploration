@@ -210,6 +210,7 @@ class OneTTest:
                 for item in dataList:
                     partialSum += (float(item) - self.mean) ** 2
                 self.stdDev = np.sqrt(partialSum / (self.n - 1))
+                file.close()
                 return 'good'  # return if it be good
                 # except:
                 #     self.status.configure(text='Data Issue: Check that all data are floats')
@@ -228,7 +229,7 @@ class OneTTest:
             self.status.configure(text='Please input a \u03bc')
             self.status.update()
         elif self.test == 'default':
-            self.status.configure(text='Please choose and alternative hypthesis')
+            self.status.configure(text='Please choose an alternative hypthesis')
             self.status.update()
         elif self.stdDev == 'default':
             self.status.configure(text='Please input a sample standard deviation')
