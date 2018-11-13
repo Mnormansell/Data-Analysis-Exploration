@@ -38,7 +38,8 @@ class OneTTest:
             try:
                 self.alpha = float(stringAlpha)
                 if self.alpha > 0 and self.alpha < 1:
-                    alphaValue = Label(mainFrame, text='\u03B1 = ' + str(self.alpha)).grid(row=1, column=3, pady=2)
+                    self.alphaValue.configure(text='\u03B1 = ' + str(self.alpha))
+                    self.alphaValue.configure()
                 else:
                     self.status.configure(text='Please input a confidence level between 0 and 1')
                     self.status.update()
@@ -49,6 +50,8 @@ class OneTTest:
         self.alphaLabel = Label(mainFrame, text='\u03B1').grid(row=1, column=0, pady=2)
         self.alphaEntry = Entry(mainFrame, textvariable=alphaInput).grid(row=1, column=1, padx=10, pady=2)
         self.alphaButton = Button(mainFrame, text='Input', command=alphaRetrieve).grid(row=1, column=2, pady=2)
+        self.alphaValue = Label(mainFrame, text=' ')
+        self.alphaValue.grid(row=1, column=3, pady=2)
 
         # mu
         muInput = StringVar()
@@ -57,7 +60,8 @@ class OneTTest:
             stringMu = muInput.get()
             try:
                 self.mu = float(stringMu)
-                muValue = Label(mainFrame, text=u'\u03bc = ' + str(self.mu)).grid(row=2, column=3, pady=2)
+                self.muValue.configure(text=u'\u03bc = ' + str(self.mu))
+                self.muValue.update()
             except:
                 self.status.configure(text='Invalid Input')
                 self.status.update()
@@ -65,27 +69,35 @@ class OneTTest:
         self.muLabel = Label(mainFrame, text=u'\u03bc = ').grid(row=2, column=0, pady=2)
         self.muEntry = Entry(mainFrame, textvariable=muInput).grid(row=2, column=1, padx=10, pady=2)
         self.muButton = Button(mainFrame, text='Input', command=muRetrieve).grid(row=2, column=2, pady=2)
+        self.muValue = Label(mainFrame, text=' ')
+        self.muValue.grid(row=2, column=3, pady=2)
 
         # Hypothesis Testing
+
         def less():
             self.test = -1  # arbitrary
-            hypothesis = Label(mainFrame, text='H: \u03bc < \u03bc\u2090').grid(row=3, column=3, pady=2)
+            self.hypothesis.configure(text='H: \u03bc < \u03bc\u2090')
+            self.hypothesis.update()
 
         self.lessThan = Button(mainFrame, text='H: \u03bc < \u03bc\u2090', command=less).grid(row=3, column=0, pady=2)
 
         def greater():
             self.test = 1  # arbitrary
-            hypothesis = Label(mainFrame, text='H: \u03bc > \u03bc\u2090').grid(row=3, column=3, pady=2)
+            self.hypothesis.configure(text='H: \u03bc > \u03bc\u2090')
+            self.hypothesis.update()
 
         self.lessThan = Button(mainFrame, text='H: \u03bc > \u03bc\u2090', command=greater).grid(row=3, column=1,
                                                                                                  pady=2)
 
         def neq():
             self.test = 0  # arbitrary
-            self.hypothesis = Label(mainFrame, text='H: \u03bc \u2260 \u03bc\u2090').grid(row=3, column=3, pady=2)
+            self.hypothesis.configure(text='H: \u03bc \u2260 \u03bc\u2090')
+            self.hypothesis.update()
 
         self.lessThan = Button(mainFrame, text='H: \u03bc \u2260 \u03bc\u2090', command=neq).grid(row=3, column=2,
                                                                                                   pady=2)
+        self.hypothesis = Label(mainFrame, text='')
+        self.hypothesis.grid(row=3, column=3, pady=2)
 
         # Sample Mean
         meanInput = StringVar()
@@ -94,7 +106,8 @@ class OneTTest:
             meanString = meanInput.get()
             try:
                 self.mean = float(meanString)
-                meanValue = Label(mainFrame, text='x = ' + str(self.mean)).grid(row=4, column=3, pady=2)
+                self.meanValue.configure(text='x = ' + str(self.mean))
+                self.meanvalue.update()
             except:
                 self.status.configure(text='Invalid Input')
                 self.status.update()
@@ -102,6 +115,8 @@ class OneTTest:
         self.meanLabel = Label(mainFrame, text='Sample Mean').grid(row=4, column=0, pady=2)
         self.meanEntry = Entry(mainFrame, textvariable=meanInput).grid(row=4, column=1, padx=10, pady=2)
         self.meanButton = Button(mainFrame, text='Input', command=meanRetrieve).grid(row=4, column=2, pady=2)
+        self.meanValue = Label(mainFrame, text='')
+        self.meanValue.grid(row=4, column=3, pady=2)
 
         # Sample Standard Deviation
         stdInput = StringVar()
@@ -110,7 +125,8 @@ class OneTTest:
             stdString = stdInput.get()
             try:
                 self.stdDev = float(stdString)
-                stdValue = Label(mainFrame, text='s = ' + str(self.stdDev)).grid(row=5, column=3, pady=2)
+                self.stdValue.configure(text='s = ' + str(self.stdDev))
+                self.stdValue.update()
             except:
                 self.status.configure(text='Invalid Input')
                 self.status.update()
@@ -118,6 +134,8 @@ class OneTTest:
         self.stdLabel = Label(mainFrame, text='Sample Std. Dev').grid(row=5, column=0, pady=2)
         self.stdEntry = Entry(mainFrame, textvariable=stdInput).grid(row=5, column=1, padx=10, pady=2)
         self.stdButton = Button(mainFrame, text='Input', command=stdRetrieve).grid(row=5, column=2, pady=2)
+        self.stdValue = Label(mainFrame, text=' ')
+        self.stdValue.grid(row=5, column=3, pady=2)
 
         # Sample Size
         nInput = StringVar()
@@ -127,7 +145,8 @@ class OneTTest:
             try:
                 self.n = float(nString)
                 self.df = self.n - 1
-                nValue = Label(mainFrame, text='n = ' + str(self.n)).grid(row=6, column=3, pady=2)
+                self.nValue.configure(text='n = ' + str(self.n))
+                self.nValue.update()
             except:
                 self.status.configure(text='Invalid Input')
                 self.status.update()
@@ -135,6 +154,8 @@ class OneTTest:
         self.nLabel = Label(mainFrame, text='Sample Size').grid(row=6, column=0, pady=2)
         self.nEntry = Entry(mainFrame, textvariable=nInput).grid(row=6, column=1, padx=10, pady=2)
         self.nButton = Button(mainFrame, text='Input', command=nRetrieve).grid(row=6, column=2, pady=2)
+        self.nValue = Label(mainFrame, text=' ')
+        self.nValue.grid(row=6, column=3, pady=2)
         # Data Location
         locationInput = StringVar()
 
@@ -142,9 +163,12 @@ class OneTTest:
             location = locationInput.get()
             data = self.dataBreakdown(location)  # calls function
             if data == 'good':
-                meanValue = Label(mainFrame, text='x = ' + str(self.mean)).grid(row=4, column=3, pady=2)
-                nValue = Label(mainFrame, text='n = ' + str(self.n)).grid(row=6, column=3, pady=2)
-                stdValue = Label(mainFrame, text='s = ' + str(self.stdDev)).grid(row=5, column=3, pady=2)
+                self.meanValue.configure(text='x = ' + str(self.mean))
+                self.meanValue.update()
+                self.stdValue.configure(text='s = ' + str(self.stdValue))
+                self.stdValue.update()
+                self.nValue.configure(text='n = ' + str(self.n))
+                self.nValue.update()
 
         self.locationLabel = Label(mainFrame, text='Data Input (Optional)').grid(row=7, column=0, pady=2)
         self.locationEntry = Entry(mainFrame, textvariable=locationInput).grid(row=7, column=1, padx=10, pady=2)

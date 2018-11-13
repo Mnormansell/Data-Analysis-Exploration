@@ -36,7 +36,8 @@ class ZInt:
             try:
                 self.alpha = float(stringAlpha)
                 if self.alpha > 0 and self.alpha < 1:
-                    alphaValue = Label(mainFrame, text='\u03B1 = ' + str(self.alpha)).grid(row=1, column=3, pady=2)
+                    self.alphaValue.configure(text='\u03B1 = ' + str(self.alpha))
+                    self.alphaValue.update()
                 else:
                     self.status.configure(text='Please input a confidence level between 0 and 1')
                     self.status.update()
@@ -47,6 +48,8 @@ class ZInt:
         self.alphaLabel = Label(mainFrame, text='\u03B1').grid(row=1, column=0, pady=2)
         self.alphaEntry = Entry(mainFrame, textvariable=alphaInput).grid(row=1, column=1, padx=10, pady=2)
         self.alphaButton = Button(mainFrame, text='Input', command=alphaRetrieve).grid(row=1, column=2, pady=2)
+        self.alphaValue = Label(mainFrame, text=' ')
+        self.alphaValue.grid(row=1, column=3, pady=2)
 
         # mu
         muInput = StringVar()
@@ -55,7 +58,8 @@ class ZInt:
             stringMu = muInput.get()
             try:
                 self.mu = float(stringMu)
-                muValue = Label(mainFrame, text=u'\u03bc = ' + str(self.mu)).grid(row=2, column=3, pady=2)
+                self.muValue.configure(text=u'\u03bc = ' + str(self.mu))
+                self.muValue.update()
             except:
                 self.status.configure(text='Invalid Input')
                 self.status.update()
@@ -63,6 +67,8 @@ class ZInt:
         self.muLabel = Label(mainFrame, text=u'\u03bc = ').grid(row=2, column=0, pady=2)
         self.muEntry = Entry(mainFrame, textvariable=muInput).grid(row=2, column=1, padx=10, pady=2)
         self.muButton = Button(mainFrame, text='Input', command=muRetrieve).grid(row=2, column=2, pady=2)
+        self.muValue = Label(mainFrame, text=' ')
+        self.muValue.grid(row=2, column=3, pady=2)
 
         # Sigma
         sigmaInput = StringVar()
@@ -83,11 +89,31 @@ class ZInt:
         # Sample Mean
         meanInput = StringVar()
 
+        def sigmaRetrieve():
+            sigmaString = sigmaInput.get()
+            try:
+                self.sigma = float(sigmaString)
+                self.sigmaValue.configure(text='\u03C3 = ' + str(self.sigma))
+                self.sigmaValue.update()
+            except:
+                self.status.configure(text='Invalid Input')
+                self.status.update()
+
+        self.sigmaLabel = Label(mainFrame, text='\u03C3').grid(row=3, column=0, pady=2)
+        self.sigmaEntry = Entry(mainFrame, textvariable=sigmaInput).grid(row=3, column=1, padx=10, pady=2)
+        self.sigmaButton = Button(mainFrame, text='Input', command=sigmaRetrieve).grid(row=3, column=2, pady=2)
+        self.sigmaValue = Label(mainFrame, text=' ')
+        self.sigmaValue.grid(row=3, column=3, pady=2)
+
+        # Sample Mean
+        meanInput = StringVar()
+
         def meanRetrieve():
             meanString = meanInput.get()
             try:
                 self.mean = float(meanString)
-                meanValue = Label(mainFrame, text='x = ' + str(self.mean)).grid(row=4, column=3, pady=2)
+                self.meanValue.configure(text='x = ' + str(self.mean))
+                self.meanValue.update()
             except:
                 self.status.configure(text='Invalid Input')
                 self.status.update()
@@ -95,6 +121,8 @@ class ZInt:
         self.meanLabel = Label(mainFrame, text='Sample Mean').grid(row=4, column=0, pady=2)
         self.meanEntry = Entry(mainFrame, textvariable=meanInput).grid(row=4, column=1, padx=10, pady=2)
         self.meanButton = Button(mainFrame, text='Input', command=meanRetrieve).grid(row=4, column=2, pady=2)
+        self.meanValue = Label(mainFrame, text=' ')
+        self.meanValue.grid(row=4, column=3, pady=2)
 
         # Sample Size
         nInput = StringVar()
@@ -103,7 +131,8 @@ class ZInt:
             nString = nInput.get()
             try:
                 self.n = float(nString)
-                nValue = Label(mainFrame, text='n = ' + str(self.n)).grid(row=5, column=3, pady=2)
+                self.nValue.configure(text='n = ' + str(self.n))
+                self.nValue.update()
             except:
                 self.status.configure(text='Invalid Input')
                 self.status.update()
@@ -111,6 +140,8 @@ class ZInt:
         self.nLabel = Label(mainFrame, text='Sample Size').grid(row=5, column=0, pady=2)
         self.nEntry = Entry(mainFrame, textvariable=nInput).grid(row=5, column=1, padx=10, pady=2)
         self.nButton = Button(mainFrame, text='Input', command=nRetrieve).grid(row=5, column=2, pady=2)
+        self.nValue = Label(mainFrame, text=' ')
+        self.nValue.grid(row=5, column=3, pady=2)
         # Data Location
         locationInput = StringVar()
 
@@ -118,9 +149,10 @@ class ZInt:
             location = locationInput.get()
             data = self.dataBreakdown(location)  # calls function
             if data == 'good':
-                meanValue = Label(mainFrame, text='x = ' + str(self.mean)).grid(row=4, column=3, pady=2)
-                nValue = Label(mainFrame, text='n = ' + str(self.n)).grid(row=5, column=3, pady=2)
-
+                self.meanValue.configure(text='x = ' + str(self.mean))
+                self.meanValue.update()
+                self.nValue.configure(text='n = ' + str(self.n))
+                self.meanValue.update()
         self.locationLabel = Label(mainFrame, text='Data Input (Optional)').grid(row=6, column=0, pady=2)
         self.locationEntry = Entry(mainFrame, textvariable=locationInput).grid(row=6, column=1, padx=10, pady=2)
         self.locationButton = Button(mainFrame, text='Input', command=locationRetrieve).grid(row=6, column=2, pady=2)

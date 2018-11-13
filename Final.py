@@ -11,7 +11,9 @@ import matplotlib.pyplot as plt
 from z_test import ZTest
 from z_int import ZInt
 from one_t_test import OneTTest
+from two_t_test import TwoTTest
 from t_int import TInt
+
 
 # Need Alpha, U, Sigma, Mean, Or Data location z = x - u / o
 # Errors, after inputting data, you can't overwrite things
@@ -45,14 +47,15 @@ def oneSampTTest():
 
 
 def twoSampTTest():
-    print('two sample T test here')
-
+    for widget in main.winfo_children():
+        widget.destroy()
+    createMenus()
+    TwoTTest(main)
 
 def tInt():
     for widget in main.winfo_children():
         widget.destroy()
     createMenus()
-
     TInt(main)
 
 
