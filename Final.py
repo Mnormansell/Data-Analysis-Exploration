@@ -14,6 +14,7 @@ from one_t_test import OneTTest
 from two_t_test import TwoTTest
 from t_int import TInt
 
+from tdc import Tdc
 
 # Need Alpha, U, Sigma, Mean, Or Data location z = x - u / o
 # Errors, after inputting data, you can't overwrite things
@@ -59,28 +60,12 @@ def tInt():
     TInt(main)
 
 
-def twoDimensional():
-    print('2d graphing here')
+def tdc():
+    for widget in main.winfo_children():
+        widget.destroy()
+    createMenus()
+    Tdc(main)
 
-
-def threeDimensional():
-    print('2d graphing here')
-
-
-def scatterplot():
-    print('Scatterplot here')
-
-
-def histogram():
-    print('histogram here')
-
-
-def lineGraphing():
-    print('Line graphing')
-
-
-def pieCharts():
-    print('Pit charts here')
 
 
 # will need classes for buttons
@@ -97,15 +82,19 @@ def createMenus():
     statsMenu.add_command(label='Two Sample T-Test', command=twoSampTTest)
     statsMenu.add_command(label='T-Interval', command=tInt)
     # Graphing Menu
-    graphMenu = Menu(menu, tearoff=0)
-    menu.add_cascade(label='Graphing', menu=graphMenu)
-    graphMenu.add_command(label='2D Graphing', command=twoDimensional)
-    graphMenu.add_command(label='3D Graphing', command=threeDimensional)
-    graphMenu.add_separator()
-    graphMenu.add_command(label='Scatterplot', command=scatterplot)
-    graphMenu.add_command(label='Histogram', command=histogram)
-    graphMenu.add_command(label='Line Graph', command=lineGraphing)
-    graphMenu.add_command(label='Pie Graph', command=pieCharts)
+    tdcMenu = Menu(menu, tearoff=0)
+    menu.add_cascade(label='2D Graphing', menu=tdcMenu)
+    tdcSubMenu = Menu(menu, tearoff=0)
+    tdcMenu.add_cascade(label='2D Cartesian', menu = tdcSubMenu)
+    tdcSubMenu.add_command(label='Quadratics', command=tdc)
+
+    # graphMenu.add_command(label='2D Graphing', command=twoDimensional)
+    # graphMenu.add_command(label='3D Graphing', command=threeDimensional)
+    # graphMenu.add_separator()
+    # graphMenu.add_command(label='Scatterplot', command=scatterplot)
+    # graphMenu.add_command(label='Histogram', command=histogram)
+    # graphMenu.add_command(label='Line Graph', command=lineGraphing)
+    # graphMenu.add_command(label='Pie Graph', command=pieCharts)
 
 
 # Perhaps Another menu
@@ -131,7 +120,8 @@ canvas.get_tk_widget().pack(side=BOTTOM, fill=BOTH, expand=1)
 # Don't update toolbar yet, that's for second part
 # toolbar = NavigationToolbar2Tk(canvas, main)
 # toolbar.update()
-canvas.get_tk_widget().pack(side=BOTTOM, fill=BOTH, expand=1)
+
+
 
 # savefig('../figures/grid_ex.png',dpi=48)
 
