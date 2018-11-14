@@ -15,6 +15,8 @@ from two_t_test import TwoTTest
 from t_int import TInt
 
 from tdc import Tdc
+from tdc_t import Tdc_t
+from tdc_h import Tdc_h
 
 # Need Alpha, U, Sigma, Mean, Or Data location z = x - u / o
 # Errors, after inputting data, you can't overwrite things
@@ -66,7 +68,17 @@ def tdc():
     createMenus()
     Tdc(main)
 
+def tdc_t():
+    for widget in main.winfo_children():
+        widget.destroy()
+    createMenus()
+    Tdc_t(main)
 
+def tdc_h():
+    for widget in main.winfo_children():
+        widget.destroy()
+    createMenus()
+    Tdc_h(main)
 
 # will need classes for buttons
 def createMenus():
@@ -87,7 +99,8 @@ def createMenus():
     tdcSubMenu = Menu(menu, tearoff=0)
     tdcMenu.add_cascade(label='2D Cartesian', menu = tdcSubMenu)
     tdcSubMenu.add_command(label='Quadratics', command=tdc)
-
+    tdcSubMenu.add_command(label='Cubics', command=tdc_t)
+    tdcSubMenu.add_command(label='Simple Harmonic Motion', command=tdc_h)
     # graphMenu.add_command(label='2D Graphing', command=twoDimensional)
     # graphMenu.add_command(label='3D Graphing', command=threeDimensional)
     # graphMenu.add_separator()

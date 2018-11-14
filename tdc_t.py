@@ -9,13 +9,13 @@ import matplotlib.pyplot as plt
 
 
 # two dimensional cartesian : parabola
-class Tdc():
+class Tdc_t():
     def __init__(self, master):
         mainFrame = Frame(master)
-        master.geometry('600x800')
+        master.geometry('700x800')
         mainFrame.pack()
 
-        instructions = Label(mainFrame, text='Visualization of the Quadratic Equation - Use the sliders to manipulate ax\u00B2 + bx + c')
+        instructions = Label(mainFrame, text='Visualization of the Quadratic Equation - Use the sliders to manipulate ax\u00B3 + bx\u00B2 + cx + d')
         instructions.config(font=("Helvetica", 12))
         instructions.grid(row=0, columnspan=5)
 
@@ -41,6 +41,13 @@ class Tdc():
                         tickinterval=2)
         self.sliderC.grid(row=3, column=1, padx=10, pady=2)
 
+        self.labelD = Label(mainFrame, text='d')
+        self.labelD.config(font=("Helvetica", 16))
+        self.labelD.grid(row=4, column=0, pady=2)
+        self.sliderD = Scale(mainFrame, orient=HORIZONTAL, length=300, width=20, from_=-10, to=10,
+                             tickinterval=2)
+        self.sliderD.grid(row=4, column=1, padx=10, pady=2)
+
         def graph():
             while len(master.winfo_children()) > 2:
                 master.winfo_children()[2].destroy()
@@ -50,15 +57,10 @@ class Tdc():
             f.add_axes()
 
             x = np.arange(-10, 10, .01)
-            ax.plot(x, (self.sliderA.get()) * x ** 2 + (self.sliderB.get()) * x + (self.sliderC.get()))
-            ax.set(title=str(self.sliderA.get())+'x\u00B2 + ' + str(self.sliderB.get()) + 'x + ' + str(self.sliderC.get()),
+            ax.plot(x, (self.sliderA.get()) * x ** 3 + (self.sliderB.get()) * x **2 + (self.sliderC.get())*x + (self.sliderD.get()))
+            ax.set(title=str(self.sliderA.get())+'x\u00B3 + ' + str(self.sliderB.get()) + 'x\u00B2 + ' + str(self.sliderC.get()) +'x + ' + str(self.sliderD.get()),
                    xlabel='x',ylabel='y')
-            if self.sliderA.get() > 0:
-                ax.set_ylim([-10,40])
-            elif self.sliderA.get() == 0:
-                ax.set_ylim([-20, 20])
-            else:
-                ax.set_ylim([-40, 10])
+            ax.set_ylim([-20,20])
             ax.set_xlim([-5,5])
             ax.grid(True)
 

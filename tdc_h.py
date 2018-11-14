@@ -9,13 +9,13 @@ import matplotlib.pyplot as plt
 
 
 # two dimensional cartesian : parabola
-class Tdc():
+class Tdc_h():
     def __init__(self, master):
         mainFrame = Frame(master)
         master.geometry('600x800')
         mainFrame.pack()
 
-        instructions = Label(mainFrame, text='Visualization of the Quadratic Equation - Use the sliders to manipulate ax\u00B2 + bx + c')
+        instructions = Label(mainFrame, text='Visualization of harmonic motion- Use the sliders to manipulate Asin(2\u03C0/b) + c')
         instructions.config(font=("Helvetica", 12))
         instructions.grid(row=0, columnspan=5)
 
@@ -49,26 +49,26 @@ class Tdc():
             ax = f.add_subplot(111)
             f.add_axes()
 
-            x = np.arange(-10, 10, .01)
-            ax.plot(x, (self.sliderA.get()) * x ** 2 + (self.sliderB.get()) * x + (self.sliderC.get()))
-            ax.set(title=str(self.sliderA.get())+'x\u00B2 + ' + str(self.sliderB.get()) + 'x + ' + str(self.sliderC.get()),
-                   xlabel='x',ylabel='y')
-            if self.sliderA.get() > 0:
-                ax.set_ylim([-10,40])
-            elif self.sliderA.get() == 0:
-                ax.set_ylim([-20, 20])
+            if self.sliderB.get() == 0:
+                divZero = Label(master, text="If B is set to zero there is a Divide by Zero Error. Please change B's value.")
+                divZero.configure(font=("Helvetica", 16))
+                divZero.pack(side = BOTTOM, fill = BOTH, expand = TRUE)
             else:
-                ax.set_ylim([-40, 10])
-            ax.set_xlim([-5,5])
-            ax.grid(True)
+                x = np.arange(-10, 10, .01)
+                ax.plot(x, (self.sliderA.get()) * np.sin( ((2*np.pi) / (self.sliderB.get())) * x) + (self.sliderC.get()))
+                ax.set(title=str(self.sliderA.get())+'sin( (2\u03C0/' + str(self.sliderB.get()) + ')x ) + ' + str(self.sliderC.get()),
+                       xlabel='x',ylabel='y')
+                ax.set_ylim([-5-(self.sliderA.get()),5+(self.sliderA.get())])
+                ax.set_xlim([-10,10])
+                ax.grid(True)
 
-            canvas = FigureCanvasTkAgg(f, master=master)
-            canvas.draw()
-            canvas.get_tk_widget().pack(side=RIGHT, fill=BOTH, expand=TRUE)
+                canvas = FigureCanvasTkAgg(f, master=master)
+                canvas.draw()
+                canvas.get_tk_widget().pack(side=RIGHT, fill=BOTH, expand=TRUE)
 
-            toolbar = NavigationToolbar2Tk(canvas, master)
-            toolbar.update()
-            canvas.get_tk_widget().pack(side=BOTTOM, fill=BOTH, expand=TRUE)
+                toolbar = NavigationToolbar2Tk(canvas, master)
+                toolbar.update()
+                canvas.get_tk_widget().pack(side=BOTTOM, fill=BOTH, expand=TRUE)
 
         update = Button(mainFrame, text='Update', command=graph)
         update.grid(rowspan=3, column=2, padx=10, pady=2)
