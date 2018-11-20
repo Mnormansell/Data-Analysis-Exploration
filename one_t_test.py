@@ -15,6 +15,7 @@ class OneTTest:
     stdDev = 'default'
     n = 'default'
     df = 'default'
+    hasGraphed = 0
 
     def __init__(self, master):
         mainFrame = Frame(master)
@@ -165,7 +166,7 @@ class OneTTest:
             if data == 'good':
                 self.meanValue.configure(text='x = ' + str(self.mean))
                 self.meanValue.update()
-                self.stdValue.configure(text='s = ' + str(self.stdValue))
+                self.stdValue.configure(text='s = ' + str(self.stdDev))
                 self.stdValue.update()
                 self.nValue.configure(text='n = ' + str(self.n))
                 self.nValue.update()
@@ -187,7 +188,7 @@ class OneTTest:
                 for row in reader:
                     if count == 0:  # first line, find what position the data is at
                         for i in range(0, len(row)):
-                            if row[i] == 'data' or 'Data':
+                            if row[i] == 'data' or row[i] == 'Data':
                                 position = i  # sets the position
                         count += 1
                     else:
@@ -255,3 +256,88 @@ class OneTTest:
             if pValue >= self.alpha:
                 self.status.configure(text='t = ' + str(tScore) + ', p = ' + str(pValue) + ', Fail to reject H\u2092')
                 self.status.update()
+            parent = self.status.winfo_parent() #workaround to pass the main window as a parameter
+            parentName = Widget.nametowidget(self.status, parent)
+            self.graph(parentName)
+
+
+    def graph(self, master):
+        if self.hasGraphed == 1:
+            master.winfo_children()[len(master.winfo_children()) - 1].destroy()
+            master.winfo_children()[len(master.winfo_children()) - 1].destroy()
+        master.geometry('670x750')
+        self.hasGraphed = 1
+
+        f = Figure(figsize=(4, 4), dpi=100)
+        ax = f.add_subplot(111)
+        f.add_axes()
+
+        standardError = self.stdDev / np.sqrt(self.n) # Weight sigma, like sample mean distributions
+        left = -5 * standardError
+        right = 5 * standardError
+        step = .01
+
+        # Change x-scale depending on the magnitude of the sample mean
+        if ((self.mean > 4 * standardError) or (self.mean < -4 * standardError)):
+            if self.mean < 0:
+                left = self.mu + (1.5 * self.mean)
+                right = self.mu - (-1.5 * self.mean)
+            else:
+                left = self.mu - (1.5 * self.mean)
+                right = self.mu + (1.5 * self.mean)
+
+        # Make sure small step with large values is not overloading memory
+        if standardError > 100:
+            step = standardError/100
+
+        x = np.arange(left, right, step)
+
+        y1 = sci.t.pdf(x, self.df, loc=self.mu, scale=standardError)
+        y2 =  50 * (x - self.mean) #Essentially a straight line at the sample mean
+
+        ax.plot(x, y1,label='N(\u03bc,\u03C3)',color='blue')
+        ax.plot(x, y2, label='Sample Mean', color='orange' )
+
+        if self.test == -1:  # visualize score needed, based of z = x - u / (o / sqrt(n))
+            critical_value = (sci.t.ppf(self.alpha, self.df)*standardError) + self.mu
+            print(critical_value)
+            y3 = 50*(x - (critical_value))
+            ax.plot(x, y3, label='Critical Value', color='red')
+            ax.fill_between(x, y3, y1, where=y3 <= y1, color='red')
+        elif self.test == 0:  # not equal
+            critical_value_1 = (sci.t.ppf(self.alpha / 2, self.df) * standardError) + self.mu
+            print(critical_value_1)
+            critical_value_2 = (sci.t.ppf(1 - (self.alpha / 2), self.df) * standardError) + self.mu
+            print(critical_value_2)
+            y3 = 100 * (x - critical_value_1)
+            y4 = -100 * (x - (critical_value_2))
+            ax.plot(x, y3, label='Critical Value Left', color='red')
+            ax.fill_between(x, y3, y1, where=y3 <= y1, color='red')
+            ax.plot(x, y4, label='Critical Value Right', color='red')
+            ax.fill_between(x, y4, y1, where=y1 >= y4, color='red')
+        elif self.test == 1:
+            critical_value = (sci.t.ppf(1 - self.alpha, self.df) * standardError) + self.mu
+            print(critical_value)
+            y3 = -100 * (x - critical_value )
+            ax.plot(x, y3, label='Critical Value', color='red')
+            ax.fill_between(x, y3, y1, where=y1 >= y3)
+
+        ax.legend(loc='upper right')
+
+        # Change y scale based upon sigma(seems to bea  good indicator of the spread of the data)
+        if self.stdDev < 10:
+            ax.set_ylim([0, 1])
+        elif self.stdDev < 50:
+            ax.set_ylim([0,.6])
+        elif self.stdDev < 100:
+            ax.set_ylim([0, .4])
+        else:
+            ax.set_ylim([0, .2])
+
+        canvas = FigureCanvasTkAgg(f, master=master)
+        canvas.draw()
+        canvas.get_tk_widget().pack(side=BOTTOM, fill=BOTH, expand=TRUE)
+
+        toolbar = NavigationToolbar2Tk(canvas, master)
+        toolbar.update()
+        canvas.get_tk_widget().pack(side=BOTTOM, fill=BOTH, expand=TRUE)

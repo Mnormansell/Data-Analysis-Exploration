@@ -5,7 +5,7 @@ import numpy as np
 from scipy.stats import norm
 import scipy.stats as sci
 import csv
-import matplotlib.pyplot as plt
+from tkinter import Widget
 
 class ZTest:
     alpha = 'default'
@@ -14,11 +14,12 @@ class ZTest:
     sigma = 'default'
     mean = 'default'
     n = 'default'
+    hasGraphed = 0
 
     def __init__(self, master):
         mainFrame = Frame(master)
         mainFrame.pack()
-        master.geometry('600x400')
+        master.geometry('650x400')
 
         # Status
         self.status = Label(master, text="No Errors", bd=1, relief=SUNKEN, anchor=W)
@@ -169,8 +170,10 @@ class ZTest:
         self.locationEntry = Entry(mainFrame, textvariable=locationInput).grid(row=7, column=1, padx=10, pady=2)
         self.locationButton = Button(mainFrame, text='Input', command=locationRetrieve).grid(row=7, column=2, pady=2)
         # Calculate Button
-        self.calculateButton = Button(mainFrame, text='Calculate', command=self.calculate).grid(row=8, columnspan=3,
-                                                                                                pady=2)
+        self.calculateButton = Button(mainFrame, text='Calculate', command=self.calculate).grid(row=8, columnspan=3,pady=2)
+
+        self.hasGraphed = 0
+
 
     def dataBreakdown(self, location):  # ADD THIS, THEN DO GRAPHING, THEN GOOD
         try:
@@ -182,7 +185,7 @@ class ZTest:
                 for row in reader:
                     if count == 0:  # first line, find what position the data is at
                         for i in range(0, len(row)):
-                            if row[i] == 'data' or 'Data':
+                            if row[i] == 'data' or row[i] == 'Data':
                                 position = i  # sets the position
                         count += 1
                     else:
@@ -245,3 +248,80 @@ class ZTest:
             if pValue >= self.alpha:
                 self.status.configure(text='z = ' + str(zScore) + ', p = ' + str(pValue) + ', Fail to reject H\u2092')
                 self.status.update()
+            parent = self.status.winfo_parent()
+            parentName = Widget.nametowidget(self.status, parent)
+            self.graph(parentName)
+
+
+    def graph(self, master):
+        if self.hasGraphed == 1:
+            master.winfo_children()[len(master.winfo_children()) - 1].destroy()
+            master.winfo_children()[len(master.winfo_children()) - 1].destroy()
+        master.geometry('670x750')
+        self.hasGraphed = 1
+
+        f = Figure(figsize=(4, 4), dpi=100)
+        ax = f.add_subplot(111)
+        f.add_axes()
+
+        sigmaWeighted = self.sigma / np.sqrt(self.n) # Weight sigma, like sample mean distributions
+        left = -5 * sigmaWeighted
+        right = 5 * sigmaWeighted
+        step = .01
+
+        # Change x-scale depending on the magnitude of the sample mean
+        if ((self.mean > 4 * sigmaWeighted) or (self.mean < -4 * sigmaWeighted)):
+            if self.mean < 0:
+                left = self.mu + (1.5 * self.mean)
+                right = self.mu - (-1.5 * self.mean)
+            else:
+                left = self.mu - (1.5 * self.mean)
+                right = self.mu + (1.5 * self.mean)
+
+        # Make sure small step with large values is not overloading memory
+        if sigmaWeighted > 100:
+            step = sigmaWeighted/100
+
+        x = np.arange(left, right, step)
+
+        y1 = (1 / (sigmaWeighted * (np.sqrt(2 * np.pi)))) * np.e ** (-((x - self.mu) ** 2) / (2 * sigmaWeighted ** 2)) # Normal Dist
+        y2 =  50 * (x - self.mean) #Essentially a straight line at the sample mean
+
+        ax.plot(x, y1,label='N(\u03bc,\u03C3)',color='blue')
+        ax.plot(x, y2, label='Sample Mean', color='orange' )
+
+        if self.test == -1:  # visualize score needed, based of z = x - u / (o / sqrt(n))
+            y3 = 50*(x - ((norm.ppf(self.alpha)*sigmaWeighted) + self.mu))
+            ax.plot(x, y3, label='Critical Value', color='red')
+            ax.fill_between(x, y3, y1, where=y3 <= y1)
+        elif self.test == 0:  # not equal
+            y3 = 50 * (x - ((norm.ppf(self.alpha/2) * sigmaWeighted) + self.mu))
+            y4 = -50 * (x - ((norm.ppf(1 - (self.alpha/2)) * sigmaWeighted) + self.mu))
+            ax.plot(x, y3, label='Critical Value Left', color='red')
+            ax.fill_between(x, y3, y1, where=y3 <= y1, color='red')
+            ax.plot(x, y4, label='Critical Value Right', color='red')
+            ax.fill_between(x, y4, y1, where=y1 >= y4, color='red')
+        elif self.test == 1:
+            y3 = -50 * (x - ((norm.ppf(1-self.alpha) * sigmaWeighted) + self.mu))
+            ax.plot(x, y3, label='Critical Value')
+            ax.fill_between(x, y3, y1, where=y1 >= y3)
+
+        ax.legend(loc='upper right')
+
+        # Change y scale based upon sigma(seems to bea  good indicator of the spread of the data)
+        if self.sigma < 10:
+            ax.set_ylim([0, 1])
+        elif self.sigma < 50:
+            ax.set_ylim([0,.6])
+        elif self.sigma < 100:
+            ax.set_ylim([0, .4])
+        else:
+            ax.set_ylim([0, .2])
+
+        canvas = FigureCanvasTkAgg(f, master=master)
+        canvas.draw()
+        canvas.get_tk_widget().pack(side=BOTTOM, fill=BOTH, expand=TRUE)
+
+        toolbar = NavigationToolbar2Tk(canvas, master)
+        toolbar.update()
+        canvas.get_tk_widget().pack(side=BOTTOM, fill=BOTH, expand=TRUE)

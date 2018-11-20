@@ -17,10 +17,7 @@ from t_int import TInt
 from tdc import Tdc
 from tdc_t import Tdc_t
 from tdc_h import Tdc_h
-
-# Need Alpha, U, Sigma, Mean, Or Data location z = x - u / o
-# Errors, after inputting data, you can't overwrite things
-# When you click a button it just creates another, need to delete everyhing
+from td_polar import limacons
 
 main = Tk()
 main.geometry("1024x500")
@@ -80,6 +77,12 @@ def tdc_h():
     createMenus()
     Tdc_h(main)
 
+def lima():
+    for widget in main.winfo_children():
+        widget.destroy()
+    createMenus()
+    limacons(main)
+
 # will need classes for buttons
 def createMenus():
     menu = Menu(main)
@@ -94,13 +97,19 @@ def createMenus():
     statsMenu.add_command(label='Two Sample T-Test', command=twoSampTTest)
     statsMenu.add_command(label='T-Interval', command=tInt)
     # Graphing Menu
+    graphMenu = Menu(menu, tearoff=0)
+    menu.add_cascade(label='2D Graphing', menu=graphMenu)
     tdcMenu = Menu(menu, tearoff=0)
-    menu.add_cascade(label='2D Graphing', menu=tdcMenu)
-    tdcSubMenu = Menu(menu, tearoff=0)
-    tdcMenu.add_cascade(label='2D Cartesian', menu = tdcSubMenu)
-    tdcSubMenu.add_command(label='Quadratics', command=tdc)
-    tdcSubMenu.add_command(label='Cubics', command=tdc_t)
-    tdcSubMenu.add_command(label='Simple Harmonic Motion', command=tdc_h)
+    graphMenu.add_cascade(label='2D Cartesian', menu = tdcMenu)
+    tdcMenu.add_command(label='Quadratics', command=tdc)
+    tdcMenu.add_command(label='Cubics', command=tdc_t)
+    tdcMenu.add_command(label='Simple Harmonic Motion', command=tdc_h)
+    graphMenu.add_separator() #seperator
+    tdpMenu = Menu(menu, tearoff=0)
+    graphMenu.add_cascade(label='2D Polar', menu=tdpMenu)
+    tdpMenu.add_command(label='Limacons', command=lima)
+
+
     # graphMenu.add_command(label='2D Graphing', command=twoDimensional)
     # graphMenu.add_command(label='3D Graphing', command=threeDimensional)
     # graphMenu.add_separator()

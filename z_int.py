@@ -170,7 +170,7 @@ class ZInt:
                 for row in reader:
                     if count == 0:  # first line, find what position the data is at
                         for i in range(0, len(row)):
-                            if row[i] == 'data' or 'Data':
+                            if row[i] == 'data' or row[i] == 'Data':
                                 position = i  # sets the position
                         count += 1
                     else:

@@ -276,6 +276,7 @@ class TwoTTest:
                 for row in reader:
                     if count == 0:  # first line, find what position the data is at
                         for i in range(0, len(row)):
+                            print(row[i])
                             if row[i] == 'data1' or row[i] == 'Data1':
                                 position = i  # sets the position
                             elif row[i] == 'data2' or row[i] == 'Data2':
@@ -295,6 +296,7 @@ class TwoTTest:
                 total = 0
                 partialSum = 0
                 for item in dataList:
+                    print(item)
                     total += float(item)
                     self.n_one += 1
                 self.mean_one = total / self.n_one
