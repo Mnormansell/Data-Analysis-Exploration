@@ -26,7 +26,7 @@ class TInt:
 
         # Instructions
         self.instructions = Label(mainFrame,
-                                  text='Z Test: Either manually input required statistics or import data from a .csv file (data column must be titled "Data")',
+                                  text='One Sample T Interval: Either manually input required statistics or import data from a .csv file (data column must be titled "Data")',
                                   bg='purple').grid(row=0, columnspan=3)
         # alpha
         alphaInput = StringVar()

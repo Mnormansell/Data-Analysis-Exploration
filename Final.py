@@ -13,6 +13,7 @@ from z_int import ZInt
 from one_t_test import OneTTest
 from two_t_test import TwoTTest
 from t_int import TInt
+from two_t_int import TwoTInt
 
 from tdc import Tdc
 from tdc_t import Tdc_t
@@ -58,6 +59,12 @@ def tInt():
     createMenus()
     TInt(main)
 
+def twoTInt():
+    for widget in main.winfo_children():
+        widget.destroy()
+    createMenus()
+    TwoTInt(main)
+
 
 def tdc():
     for widget in main.winfo_children():
@@ -94,8 +101,9 @@ def createMenus():
     statsMenu.add_command(label='Z-Interval', command=zInt)
     statsMenu.add_separator()
     statsMenu.add_command(label='One Sample T-Test', command=oneSampTTest)
+    statsMenu.add_command(label='One Sample T-Interval', command=tInt)
     statsMenu.add_command(label='Two Sample T-Test', command=twoSampTTest)
-    statsMenu.add_command(label='T-Interval', command=tInt)
+    statsMenu.add_command(label='Two Sample T-Interval', command=twoTInt)
     # Graphing Menu
     graphMenu = Menu(menu, tearoff=0)
     menu.add_cascade(label='2D Graphing', menu=graphMenu)
@@ -125,9 +133,12 @@ createMenus()
 mainFrame = Frame(main)
 mainFrame.pack()
 
-introduction = Label(mainFrame, text="Welcome to BLAHHH", bd=1)
-introduction.config(font=("Courier", 44))
+introduction = Label(mainFrame, text="This personal project combines Tkinter and Matplotlib to create a streamlined math tool;", bd=1)
+introduction.config(font=("Courier", 14))
 introduction.pack(side=TOP, fill=X, expand=1)
+introduction_2 = Label(mainFrame, text="Use the statistics menu or experiment with graphing examples", bd=1)
+introduction_2.config(font=("Courier", 14))
+introduction_2.pack(side=TOP, fill=X, expand=1)
 # Embedding Original Graph, code from MATLIB Original Sight
 fig = Figure(figsize=(5, 4), dpi=100)
 t = np.arange(-3, 3, .01)

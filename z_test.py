@@ -265,20 +265,17 @@ class ZTest:
         f.add_axes()
 
         sigmaWeighted = self.sigma / np.sqrt(self.n) # Weight sigma, like sample mean distributions
-        left = -5 * sigmaWeighted
-        right = 5 * sigmaWeighted
-        step = .01
 
-        # Change x-scale depending on the magnitude of the sample mean
-        if ((self.mean > 4 * sigmaWeighted) or (self.mean < -4 * sigmaWeighted)):
-            if self.mean < 0:
-                left = self.mu + (1.5 * self.mean)
-                right = self.mu - (-1.5 * self.mean)
-            else:
-                left = self.mu - (1.5 * self.mean)
-                right = self.mu + (1.5 * self.mean)
+        left = self.mu - (4 * sigmaWeighted)
+        right = self.mu + (4 * sigmaWeighted)
 
-        # Make sure small step with large values is not overloading memory
+        if self.mean > right:
+            right = self.mean + 1
+        if self.mean < left:
+            left = self.mean - 1
+
+        step = .01 # need to add part to shift relative to self.mean
+
         if sigmaWeighted > 100:
             step = sigmaWeighted/100
 
@@ -293,7 +290,7 @@ class ZTest:
         if self.test == -1:  # visualize score needed, based of z = x - u / (o / sqrt(n))
             y3 = 50*(x - ((norm.ppf(self.alpha)*sigmaWeighted) + self.mu))
             ax.plot(x, y3, label='Critical Value', color='red')
-            ax.fill_between(x, y3, y1, where=y3 <= y1)
+            ax.fill_between(x, y3, y1, where=y3 <= y1, color='red')
         elif self.test == 0:  # not equal
             y3 = 50 * (x - ((norm.ppf(self.alpha/2) * sigmaWeighted) + self.mu))
             y4 = -50 * (x - ((norm.ppf(1 - (self.alpha/2)) * sigmaWeighted) + self.mu))
@@ -304,7 +301,7 @@ class ZTest:
         elif self.test == 1:
             y3 = -50 * (x - ((norm.ppf(1-self.alpha) * sigmaWeighted) + self.mu))
             ax.plot(x, y3, label='Critical Value')
-            ax.fill_between(x, y3, y1, where=y1 >= y3)
+            ax.fill_between(x, y3, y1, where=y1 >= y3, color='red')
 
         ax.legend(loc='upper right')
 

@@ -273,18 +273,15 @@ class OneTTest:
         f.add_axes()
 
         standardError = self.stdDev / np.sqrt(self.n) # Weight sigma, like sample mean distributions
-        left = -5 * standardError
-        right = 5 * standardError
+        left = self.mu - (5 * standardError)
+        right = self.mu + (5 * standardError)
         step = .01
 
-        # Change x-scale depending on the magnitude of the sample mean
-        if ((self.mean > 4 * standardError) or (self.mean < -4 * standardError)):
-            if self.mean < 0:
-                left = self.mu + (1.5 * self.mean)
-                right = self.mu - (-1.5 * self.mean)
-            else:
-                left = self.mu - (1.5 * self.mean)
-                right = self.mu + (1.5 * self.mean)
+        if self.mean > right:
+            right = self.mean + 1
+        if self.mean < left:
+            left = self.mean - 1
+
 
         # Make sure small step with large values is not overloading memory
         if standardError > 100:
@@ -300,15 +297,12 @@ class OneTTest:
 
         if self.test == -1:  # visualize score needed, based of z = x - u / (o / sqrt(n))
             critical_value = (sci.t.ppf(self.alpha, self.df)*standardError) + self.mu
-            print(critical_value)
             y3 = 50*(x - (critical_value))
             ax.plot(x, y3, label='Critical Value', color='red')
             ax.fill_between(x, y3, y1, where=y3 <= y1, color='red')
         elif self.test == 0:  # not equal
             critical_value_1 = (sci.t.ppf(self.alpha / 2, self.df) * standardError) + self.mu
-            print(critical_value_1)
             critical_value_2 = (sci.t.ppf(1 - (self.alpha / 2), self.df) * standardError) + self.mu
-            print(critical_value_2)
             y3 = 100 * (x - critical_value_1)
             y4 = -100 * (x - (critical_value_2))
             ax.plot(x, y3, label='Critical Value Left', color='red')
@@ -317,10 +311,9 @@ class OneTTest:
             ax.fill_between(x, y4, y1, where=y1 >= y4, color='red')
         elif self.test == 1:
             critical_value = (sci.t.ppf(1 - self.alpha, self.df) * standardError) + self.mu
-            print(critical_value)
             y3 = -100 * (x - critical_value )
             ax.plot(x, y3, label='Critical Value', color='red')
-            ax.fill_between(x, y3, y1, where=y1 >= y3)
+            ax.fill_between(x, y3, y1, where=y1 >= y3, color='red')
 
         ax.legend(loc='upper right')
 
