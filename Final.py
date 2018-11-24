@@ -1,11 +1,7 @@
 from tkinter import *
-from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg, NavigationToolbar2Tk)
+from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg)
 from matplotlib.figure import Figure
 import numpy as np
-from scipy.stats import norm
-import scipy.stats as sci
-import csv
-import matplotlib.pyplot as plt
 
 # import classes
 from z_test import ZTest
@@ -18,6 +14,7 @@ from two_t_int import TwoTInt
 from tdc import Tdc
 from tdc_t import Tdc_t
 from tdc_h import Tdc_h
+from tdc_dh import Tdc_dh
 from td_polar import limacons
 
 main = Tk()
@@ -84,6 +81,12 @@ def tdc_h():
     createMenus()
     Tdc_h(main)
 
+def tdc_dh():
+    for widget in main.winfo_children():
+        widget.destroy()
+    createMenus()
+    Tdc_dh(main)
+
 def lima():
     for widget in main.winfo_children():
         widget.destroy()
@@ -107,27 +110,14 @@ def createMenus():
     # Graphing Menu
     graphMenu = Menu(menu, tearoff=0)
     menu.add_cascade(label='2D Graphing', menu=graphMenu)
-    tdcMenu = Menu(menu, tearoff=0)
-    graphMenu.add_cascade(label='2D Cartesian', menu = tdcMenu)
-    tdcMenu.add_command(label='Quadratics', command=tdc)
-    tdcMenu.add_command(label='Cubics', command=tdc_t)
-    tdcMenu.add_command(label='Simple Harmonic Motion', command=tdc_h)
+
+    graphMenu.add_command(label='Quadratics', command=tdc)
+    graphMenu.add_command(label='Cubics', command=tdc_t)
+    graphMenu.add_command(label='Simple Harmonic Motion', command=tdc_h)
+    graphMenu.add_command(label='Damped Harmonic Motion', command=tdc_dh)
     graphMenu.add_separator() #seperator
-    tdpMenu = Menu(menu, tearoff=0)
-    graphMenu.add_cascade(label='2D Polar', menu=tdpMenu)
-    tdpMenu.add_command(label='Limacons', command=lima)
 
-
-    # graphMenu.add_command(label='2D Graphing', command=twoDimensional)
-    # graphMenu.add_command(label='3D Graphing', command=threeDimensional)
-    # graphMenu.add_separator()
-    # graphMenu.add_command(label='Scatterplot', command=scatterplot)
-    # graphMenu.add_command(label='Histogram', command=histogram)
-    # graphMenu.add_command(label='Line Graph', command=lineGraphing)
-    # graphMenu.add_command(label='Pie Graph', command=pieCharts)
-
-
-# Perhaps Another menu
+    graphMenu.add_command(label='Limacons', command=lima)
 
 createMenus()
 mainFrame = Frame(main)
@@ -149,18 +139,5 @@ fig.add_subplot(132).plot(t, t ** 2 + np.sin(t) - 2 * t)
 canvas = FigureCanvasTkAgg(fig, master=mainFrame)  # A tk.DrawingArea.
 canvas.draw()
 canvas.get_tk_widget().pack(side=BOTTOM, fill=BOTH, expand=1)
-
-# Don't update toolbar yet, that's for second part
-# toolbar = NavigationToolbar2Tk(canvas, main)
-# toolbar.update()
-
-
-
-# savefig('../figures/grid_ex.png',dpi=48)
-
-# Need first screen to just be a basic explanation of everything
-# For statistics, give graph (ex show normal dist and the z-distribution stuffs, learn how to show area)
-# Have option to find data from CSV file, which they can input, but they still need to input test statistic and whatever
-# For other stuff figure that shit out
 
 main.mainloop()

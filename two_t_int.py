@@ -32,6 +32,7 @@ class TwoTInt:
 
         # Instructions
         self.instructions = Label(mainFrame,
+
                                   text='Two Sample T Test: Either manually input required statistics or import data from a .csv file (data column must be titled "Data")',
                                   bg='purple').grid(row=0, columnspan=3)
 
